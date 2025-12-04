@@ -1,0 +1,59 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build Release
+        run: make build
+
+      - name: Get version
+        id: version
+        run: |
+          if ("${{ github.ref }}".StartsWith("refs/tags/")) {
+            $version = "${{ github.ref }}".Substring("refs/tags/".Length)
+            echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          } else {
+            $version = "nightly-$(Get-Date -Format 'yyyyMMdd-HHmm')"
+            echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Rename executable
+        run: |
+          Move-Item -Path "bin\Release\NoSleepWindows.exe" -Destination "NoSleepWindows-${{ steps.version.outputs.VERSION }}.exe" -Force
+
+      - name: Upload to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: NoSleepWindows-${{ steps.version.outputs.VERSION }}.exe
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.VERSION, 'alpha') || contains(steps.version.outputs.VERSION, 'beta') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload nightly artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: NoSleepWindows-${{ steps.version.outputs.VERSION }}
+          path: NoSleepWindows-${{ steps.version.outputs.VERSION }}.exe
+          retention-days: 30

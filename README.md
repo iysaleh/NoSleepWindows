@@ -26,6 +26,18 @@ build.bat      # Windows
 bash build.sh  # Unix/Linux
 ```
 
+## Releases
+
+Pre-built executables are available on the [GitHub Releases](https://github.com/YOUR_USERNAME/NoSleepWindows/releases) page.
+
+Automated releases are created when you push a version tag:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+See [GITHUB_ACTIONS.md](GITHUB_ACTIONS.md) for more details.
+
 ## Requirements
 
 - Windows 7 or later

@@ -1,0 +1,43 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build Debug
+        run: dotnet build -c Debug
+
+      - name: Build Release
+        run: make build
+
+      - name: Verify executable exists
+        run: |
+          if (Test-Path "bin\Release\NoSleepWindows.exe") {
+            $size = (Get-Item "bin\Release\NoSleepWindows.exe").Length
+            Write-Host "✓ Executable created: $(([math]::Round($size/1KB, 2))) KB"
+          } else {
+            Write-Host "✗ Executable not found"
+            exit 1
+          }
