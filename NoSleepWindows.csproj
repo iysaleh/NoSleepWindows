@@ -6,5 +6,11 @@
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>NoSleepWindows</AssemblyName>
     <RootNamespace>NoSleepWindows</RootNamespace>
+    <!-- Single-file executable settings -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>embedded</DebugType>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 </Project>
