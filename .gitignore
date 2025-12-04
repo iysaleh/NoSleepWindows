@@ -1,0 +1,26 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependencies
+packages/
+
+**.md
